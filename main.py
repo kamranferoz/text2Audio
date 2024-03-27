@@ -1,7 +1,6 @@
 import streamlit as st
 from gtts import gTTS
 from docx import Document
-import PyPDF2
 import base64
 import os
 
@@ -24,14 +23,17 @@ def read_file(file_path):
         elif file_path.endswith('.doc') or file_path.endswith('.docx'):
             doc = Document(file_path)
             return ' '.join([paragraph.text for paragraph in doc.paragraphs])
-        elif file_path.endswith('.pdf'):
-            pdf_file = open(file_path, 'rb')
-            pdf_reader = PyPDF2.PdfFileReader(pdf_file)
+        elif file_path.endswith('.pdf'):  
+            from pdfreader import SimplePDFViewer
+            fd = open(file_path, 'rb')
+            viewer = SimplePDFViewer(fd)
             text = ''
-            for page_num in range(pdf_reader.numPages):
-                text += pdf_reader.getPage(page_num).extractText()
-            pdf_file.close()
+            for canvas in viewer:
+                viewer.render()
+                text += ' '.join(viewer.canvas.strings)
+            fd.close()
             return text
+            
     except Exception as e:
         st.error(f"Error reading file: {e}")
     return None
@@ -54,3 +56,4 @@ if uploaded_file is not None:
         st.error("Uploaded file is not a valid text file.")
     # Clean up the temporary file
     os.remove(temp_file)
+}
