@@ -56,4 +56,3 @@ if uploaded_file is not None:
         st.error("Uploaded file is not a valid text file.")
     # Clean up the temporary file
     os.remove(temp_file)
-}
