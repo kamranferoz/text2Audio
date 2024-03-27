@@ -23,14 +23,18 @@ def read_file(file_path):
         elif file_path.endswith('.doc') or file_path.endswith('.docx'):
             doc = Document(file_path)
             return ' '.join([paragraph.text for paragraph in doc.paragraphs])
-        elif file_path.endswith('.pdf'):  
+        elif file_path.endswith('.pdf'):
             from pdfreader import SimplePDFViewer
             fd = open(file_path, 'rb')
             viewer = SimplePDFViewer(fd)
             text = ''
-            for canvas in viewer:
-                viewer.render()
-                text += ' '.join(viewer.canvas.strings)
+            while True:
+                try:
+                    viewer.render()
+                    text += ' '.join(viewer.canvas.strings)
+                    viewer.next()
+                except StopIteration:
+                    break
             fd.close()
             return text
             
