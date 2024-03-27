@@ -56,13 +56,15 @@ def main():
         with open(temp_file, 'wb') as f:
             f.write(uploaded_file.getbuffer())
         text = read_file(temp_file)
-        if text is not None:
+        print(f"Text read from file: {text}")
+        if text is not None and text.strip():
             text_to_speech(text, 'output_audio.mp3')
             st.markdown(get_binary_file_downloader_html('output_audio.mp3', 'Audio'), unsafe_allow_html=True)
         else:
-            st.error("Uploaded file is not a valid text file.")
+            st.error("Uploaded file is empty or not a valid text file.")
         # Clean up the temporary file
         os.remove(temp_file)
+
 
 if __name__ == "__main__":
     main()
