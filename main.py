@@ -1,9 +1,9 @@
 import streamlit as st
 from gtts import gTTS
 from docx import Document
-import PyPDF2
 import base64
 import os
+from PyPDF2 import PdfReader
 
 def text_to_speech(text, filename):
     tts = gTTS(text)
@@ -24,15 +24,14 @@ def read_docx(file_path):
     doc = Document(file_path)
     return ' '.join([paragraph.text for paragraph in doc.paragraphs])
 
+   
 def read_pdf(file_path):
-    pdf_file = open(file_path, 'rb')
-    pdf_reader = PyPDF2.PdfFileReader(pdf_file)
+    pdf_reader = PdfReader(file_path)
     text = ''
-    for page_num in range(pdf_reader.numPages):
-        text += pdf_reader.getPage(page_num).extractText()
-    pdf_file.close()
+    for page in pdf_reader.pages:
+        text += page.extract_text()
     return text
-
+    
 def read_file(file_path):
     try:
         if file_path.endswith('.txt'):
